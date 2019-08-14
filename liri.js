@@ -1,7 +1,10 @@
 require("dotenv").config();
-// var spotify = new Spotify(keys.spotify);
+var keys = require("./keys.js");
+var Spotify = require("node-spotify-api");
+var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var node = process.argv;
+var search = node.slice(3).join(" ")
 
 var bandsApi = function (api, artist) {
     if (api === "concert-this") {
@@ -30,7 +33,16 @@ var bandsApi = function (api, artist) {
                 }
                 console.log(error.config);
             })
+    } else if (api === "spotify-this-song") {
+        spotify
+            .search({ type: "track", query: artist })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
     }
 }
 
-bandsApi(node[2], node[3]);
+bandsApi(node[2], search);
