@@ -1,10 +1,20 @@
 require("dotenv").config();
 var keys = require("./keys.js");
-var Spotify = require("node-spotify-api");
-var spotify = new Spotify(keys.spotify);
+// var Spotify = require("node-spotify-api");
+// var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var node = process.argv;
 var search = node.slice(3).join(" ")
+var movieName = "";
+for (var i = 2; i < node.length; i++) {
+
+    if (i > 2 && i < node.length) {
+        movieName = movieName + "+" + node[i];
+    } else {
+        movieName += node[i];
+
+    }
+}
 
 var bandsApi = function (api, artist) {
     if (api === "concert-this") {
@@ -39,6 +49,16 @@ var bandsApi = function (api, artist) {
             .then(function (response) {
                 console.log(response);
             })
+            .catch(function (err) {
+                console.log(err);
+            });
+    } else if (api === "movie-this") {
+        axios
+            .get("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy")
+            .then(
+                function (response) {
+                    console.log(response.data);
+                })
             .catch(function (err) {
                 console.log(err);
             });
