@@ -2,6 +2,8 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
+var moment = require("moment");
+var fs = require("fs");
 var axios = require("axios");
 var node = process.argv;
 var search = node.slice(3).join(" ")
@@ -11,7 +13,10 @@ var apiCall = function (api, artist) {
         axios
             .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp")
             .then(function (response) {
-                console.log(response.data)
+                for (i =0; i < 5; i++ ){
+                console.log("\nHere is the name of the venue: " + response.data[i].venue.name + "\nHere is the location: " + response.data[i].venue.city + ", " + response.data[i].venue.country 
+                + "\nDate of the event: " + moment(response.data[i].datetime).format("MMM Do YYYY"))
+                }
             })
             .catch(function (error) {
                 if (error.response) {
@@ -63,6 +68,15 @@ var apiCall = function (api, artist) {
             .catch(function (err) {
                 console.log(err);
             });
+    } else if (api === "do-what-it-says"){
+        fs.readFile("random.txt", "utf8", function(error, data) {
+            if (error) {
+              return console.log(error);
+            }
+            console.log(data);
+            var dataArr = data.split(",");
+            apiCall(dataArr[0], dataArr[1]);
+          });
     }
 }
 
